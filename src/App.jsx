@@ -1,4 +1,4 @@
-import { AppBar, Badge, Divider, Drawer, Hidden, IconButton, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography, withStyles } from '@material-ui/core'
+import { AppBar, Button, Badge, Divider, Drawer, Hidden, IconButton, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography, withStyles } from '@material-ui/core'
 import TodoIcon from '@material-ui/icons/FormatListNumbered'
 import HomeIcon from '@material-ui/icons/Home'
 import MenuIcon from '@material-ui/icons/Menu'
@@ -10,14 +10,57 @@ import HomePage from './pages/HomePage'
 import TodoPage from './pages/TodoPage'
 import RackPage from './pages/RackPage'
 import withRoot from './withRoot'
-
+import Tone from 'tone'
 import { store } from './ReduxRoot'
 
 const history = createBrowserHistory()
 
+class AudioMeter extends React.Component {
+  state = {
+    meter: new Tone.Meter(),
+    value: null,
+    intervalId: null
+  }
+
+  componentWillMount () {
+    const {meter} = this.state
+    // connect mic to the meter
+    Tone.Master.connect(meter)
+
+    // the current level of the mic input in decibels
+    this.setState({
+      meter,
+      value: meter.getValue()
+    })
+  }
+
+  componentDidMount () {
+    const intervalId = setInterval(() => {
+      const value = this.state.meter.getValue()
+      this.setState({
+        value,
+        intervalId
+      })
+    }, 300)
+  }
+
+  componentWillUnmount () {
+    clearInterval(this.state.intervalId)
+  }
+
+  render () {
+    return (
+      <div onClick={this.handleGetMeterClick}>
+        Level {this.state.value}
+      </div>
+    )
+  }
+}
+
 class App extends React.Component {
   state = {
-    mobileOpen: true
+    mobileOpen: true,
+    isStarted: false
   };
 
   componentDidMount () {
@@ -98,6 +141,10 @@ class App extends React.Component {
                   Season Audio Rack
                 </Typography>
               </Toolbar>
+              <Button onClick={this.handleStartStop}>
+                start / stop
+              </Button>
+              <AudioMeter />
             </AppBar>
             <Hidden mdUp>
               <Drawer
@@ -131,6 +178,19 @@ class App extends React.Component {
         </div>
       </Router>
     )
+  }
+
+  handleStartStop = (e) => {
+    const nextVal = !this.state.isStarted
+    this.setState({
+      isStarted: nextVal
+    })
+
+    if (!nextVal) {
+      Tone.Transport.stop()
+    } else {
+      Tone.Transport.start()
+    }
   }
 
   renderTodoIcon () {
@@ -223,7 +283,7 @@ const styles = theme => ({
   }
 })
 
-function mapStateToProps ({todoList, rackItemList}) {
+function mapStateToProps ({ todoList, rackItemList }) {
   return {
     todoList,
     rackItemList

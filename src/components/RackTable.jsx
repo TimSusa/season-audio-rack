@@ -45,6 +45,35 @@ class MonoSynth extends React.Component {
   }
 }
 
+class LoopPlayer extends React.Component {
+  state = {
+    isStarted: false
+  }
+
+  componentDidMount () {
+    // create a synth and connect it to the master output (your speakers)
+    // play a note every quarter-note
+    const newSynth = new Tone.Synth().toMaster()
+    this.setState({
+      synth: newSynth
+    })
+    var loop = new Tone.Loop(function (time) {
+      newSynth.triggerAttackRelease('C2', '8n', time)
+    }, '4n')
+
+    // loop between the first and fourth measures of the Transport's timeline
+    loop.start('1m')// .stop('4m')
+  }
+
+  render () {
+    return (
+      <div>
+        LoopPlayer that hears on start and stop
+      </div>
+    )
+  }
+}
+
 class RackTable extends React.Component {
   onRowClick (rackItem) {
     if (rackItem.muted) {
@@ -60,6 +89,7 @@ class RackTable extends React.Component {
     return (
       <Paper className={classes.paper}>
         <MonoSynth />
+        <LoopPlayer />
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
