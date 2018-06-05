@@ -1,4 +1,3 @@
-# example-react-material-ui-redux
-This is my custumized example project with react, material-ui and redux
+# Season Audio Rack
 
-Inspired by: https://github.com/innFactory/create-react-app-material-typescript-redux 
+WIP
