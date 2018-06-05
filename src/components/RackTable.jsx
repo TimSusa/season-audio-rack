@@ -1,6 +1,49 @@
-import { Checkbox, IconButton, Paper, Table, TableBody, TableCell, TableHead, TableRow, withStyles } from '@material-ui/core'
+import {
+  Checkbox,
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Button,
+  withStyles
+} from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete'
 import * as React from 'react'
+import Tone from 'tone'
+
+class MonoSynth extends React.Component {
+  componentDidMount () {
+    var synth = new Tone.MonoSynth({
+      'oscillator': {
+        'type': 'square'
+      },
+      'envelope': {
+        'attack': 0.1
+      }
+    }).toMaster()
+
+    this.setState({
+      synth
+    })
+  }
+
+  render () {
+    return (
+      <div style={{ border: '1px solid grey' }}>
+        <Button onClick={this.handleClick}>
+          Play MonoSynth Tone
+        </Button>
+      </div>
+    )
+  }
+
+  handleClick = () => {
+    this.state.synth.triggerAttackRelease('C4', '8n')
+  }
+}
 
 class RackTable extends React.Component {
   onRowClick (rackItem) {
@@ -16,6 +59,7 @@ class RackTable extends React.Component {
 
     return (
       <Paper className={classes.paper}>
+        <MonoSynth />
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
