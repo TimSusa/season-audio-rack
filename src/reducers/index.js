@@ -1,9 +1,10 @@
 
 import { combineReducers } from 'redux'
-import * as todoReducder from './todo'
-import * as rackReducer from './rack'
+
+import * as sliderListReducer from './slider-list'
+import * as viewSettingsReducer from './view-settings'
 
 export default combineReducers({
-  ...todoReducder,
-  ...rackReducer
+  ...sliderListReducer,
+  ...viewSettingsReducer
 })

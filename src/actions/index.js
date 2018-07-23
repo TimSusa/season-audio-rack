@@ -1,4 +1,3 @@
-import * as TodoActions from './todo'
-import * as RackActions from './rack'
+import * as MidiSliderActions from './slider-list'
 
-export const ActionCreators = Object.assign({}, TodoActions, RackActions)
+export const ActionCreators = Object.assign({}, MidiSliderActions)
